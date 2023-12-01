@@ -1,12 +1,17 @@
 module Helpers
-    ( readInts
-    , readCommaSeparatedInts
+    ( readCommaSeparatedInts
+    , readInts
+    , readStrings
     )
 where
 
 import           Data.List.Split                ( splitOn )
 
 import           Paths_advent_of_code_y2023
+
+readStrings :: FilePath -> IO [String]
+readStrings filePath =
+    lines <$> (readFile =<< getDataFileName filePath)
 
 readInts :: FilePath -> IO [Int]
 readInts filePath =
