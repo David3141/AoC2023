@@ -38,6 +38,10 @@ ghc-options:
 library:
   source-dirs: src
 
+data-files:
+  - inputs/*.txt
+
+
 executables:
   advent-of-code-y2023-exe:
     main:                Main.hs
