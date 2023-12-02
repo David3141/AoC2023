@@ -20,6 +20,7 @@ extra-source-files:
     CHANGELOG.md
 data-files:
     inputs/day01.txt
+    inputs/day02.txt
 
 source-repository head
   type: git
@@ -28,6 +29,7 @@ source-repository head
 library
   exposed-modules:
       Day01
+      Day02
       Helpers
   other-modules:
       Paths_advent_of_code_y2023
