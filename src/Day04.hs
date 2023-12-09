@@ -1,3 +1,4 @@
+{-# LANGUAGE TupleSections #-}
 {-# OPTIONS_GHC -Wno-incomplete-uni-patterns #-}
 
 module Day04 (part1, part2) where
@@ -8,16 +9,33 @@ import Text.Regex.Applicative (Alternative (many), sym)
 
 part1 :: IO Int
 part1 = sum . map calcPoints . parseCards <$> readStrings "inputs/day04.txt"
-
-part2 :: IO Int
-part2 = return 20
-
-calcPoints :: ([Int], [Int]) -> Int
-calcPoints (winningCards, actualCards) =
-  pointsForMatches . filter (`elem` winningCards) $ actualCards
   where
+    calcPoints :: ([Int], [Int]) -> Int
+    calcPoints (winningCards, actualCards) =
+      pointsForMatches . filter (`elem` winningCards) $ actualCards
+
     pointsForMatches [] = 0
     pointsForMatches matches = 2 ^ (length matches - 1)
+
+part2 :: IO Int
+part2 = sumCardCounts . process . initialize . parseCards <$> readStrings "inputs/day04.txt"
+  where
+    initialize :: [([Int], [Int])] -> [(Int, Int)] -- [(matchCount, cardCount)]
+    initialize = map $ (,1) . countMatches
+
+    countMatches :: ([Int], [Int]) -> Int
+    countMatches (winningCards, actualCards) = length . filter (`elem` winningCards) $ actualCards
+
+    process :: [(Int, Int)] -> [(Int, Int)]
+    process [] = []
+    process ((matchCount, cardCount) : rest) = (matchCount, cardCount) : process restWithNewCounts
+      where
+        (cardsNeedingUpdate, cardsStayingSame) = splitAt matchCount rest
+        updatedCards = map (\(x, count) -> (x, count + cardCount)) cardsNeedingUpdate
+        restWithNewCounts = updatedCards ++ cardsStayingSame
+
+    sumCardCounts :: [(Int, Int)] -> Int
+    sumCardCounts = sum . map snd
 
 parseCards :: [String] -> [([Int], [Int])]
 parseCards = map parseCard
