@@ -5,7 +5,7 @@ module Day04 (part1, part2) where
 
 import Data.List.Split (splitOn)
 import Helpers (fMatch, parseInt, readStrings)
-import Text.Regex.Applicative (Alternative (many), sym)
+import Text.Regex.Applicative (Alternative (many))
 
 part1 :: IO Int
 part1 = sum . map calcPoints . parseCards <$> readStrings "inputs/day04.txt"
@@ -45,6 +45,5 @@ parseCards = map parseCard
       where
         [_, cards] = splitOn ": " str
         [winningString, actualString] = splitOn " | " cards
-        whitespace = many $ sym ' '
-        winningCards = fMatch (many $ whitespace *> parseInt <* whitespace) winningString
-        actualCards = fMatch (many $ whitespace *> parseInt <* whitespace) actualString
+        winningCards = fMatch (many parseInt) winningString
+        actualCards = fMatch (many parseInt) actualString

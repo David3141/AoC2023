@@ -12,7 +12,7 @@ import Data.Char (isDigit)
 import Data.List.Split (splitOn)
 import Data.Maybe (fromJust)
 import Paths_advent_of_code_y2023
-import Text.Regex.Applicative (Alternative (many), RE, match, psym)
+import Text.Regex.Applicative (Alternative (many), RE, match, psym, sym)
 
 readAsSingleString :: FilePath -> IO String
 readAsSingleString filePath = readFile =<< getDataFileName filePath
@@ -29,7 +29,7 @@ readCommaSeparatedInts :: String -> [Int]
 readCommaSeparatedInts = map read . splitOn ","
 
 parseInt :: RE Char Int
-parseInt = read <$> many (psym isDigit)
+parseInt = read <$> (many (sym ' ') *> many (psym isDigit))
 
 -- | like match but forces the result with fromJust
 fMatch :: RE Char c -> String -> c
