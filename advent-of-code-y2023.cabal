@@ -24,6 +24,7 @@ data-files:
     inputs/day03.txt
     inputs/day04.txt
     inputs/day05.txt
+    inputs/day06.txt
 
 source-repository head
   type: git
@@ -36,6 +37,7 @@ library
       Day03
       Day04
       Day05
+      Day06
       Helpers
   other-modules:
       Paths_advent_of_code_y2023
