@@ -26,7 +26,8 @@ data-files:
     inputs/day05.txt
     inputs/day06.txt
     inputs/day07.txt
-    inputs/Day08.txt
+    inputs/day08.txt
+    inputs/day10.txt
 
 source-repository head
   type: git
@@ -42,7 +43,9 @@ library
       Day06
       Day07
       Day08
+      Day10
       Helpers
+      MatrixHelpers
   other-modules:
       Paths_advent_of_code_y2023
   autogen-modules:
