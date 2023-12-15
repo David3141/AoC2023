@@ -26,6 +26,7 @@ data-files:
     inputs/day05.txt
     inputs/day06.txt
     inputs/day07.txt
+    inputs/Day08.txt
 
 source-repository head
   type: git
@@ -40,6 +41,7 @@ library
       Day05
       Day06
       Day07
+      Day08
       Helpers
   other-modules:
       Paths_advent_of_code_y2023
@@ -51,6 +53,7 @@ library
   build-depends:
       array
     , base >=4.7 && <5
+    , containers
     , regex-applicative
     , split
     , timeit
@@ -69,6 +72,7 @@ executable advent-of-code-y2023-exe
       advent-of-code-y2023
     , array
     , base >=4.7 && <5
+    , containers
     , regex-applicative
     , split
     , timeit
@@ -88,6 +92,7 @@ test-suite advent-of-code-y2023-test
       advent-of-code-y2023
     , array
     , base >=4.7 && <5
+    , containers
     , regex-applicative
     , split
     , timeit
