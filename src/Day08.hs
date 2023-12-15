@@ -2,23 +2,30 @@
 
 module Day08 (part1, part2) where
 
-import qualified Data.Map.Strict as Map
+import qualified Data.Map.Strict as M
 import Helpers (readStrings)
 
-type Network = Map.Map String (String, String)
-
-type State = (String, String, Network, Int) -- directions, location, network, step count
+type Network = M.Map String (String, String)
 
 part1 :: IO Int
-part1 =
-  followInstruction . initializeState . parseNodes <$> readStrings "inputs/day08.txt"
+part1 = stepsUntilCondition (== "ZZZ") "AAA" . parseNodes <$> readStrings "inputs/day08.txt"
 
 part2 :: IO Int
-part2 = return 20
+part2 = do
+  (directions, network) <- parseNodes <$> readStrings "inputs/day08.txt"
+
+  let endsOnA [_, _, c] = c == 'A'
+  let endsOnZ [_, _, c] = c == 'Z'
+  let startNodes = M.keys $ M.filterWithKey (\key _ -> endsOnA key) network
+
+  return
+    . foldl1 lcm
+    . map (\startNode -> stepsUntilCondition endsOnZ startNode (directions, network))
+    $ startNodes
 
 parseNodes :: [String] -> (String, Network)
 parseNodes (instructions : _ : networkStr) =
-  (instructions, Map.fromList network)
+  (instructions, M.fromList network)
   where
     network = map parseLine networkStr
     parseLine str = (location, (left, right))
@@ -27,20 +34,16 @@ parseNodes (instructions : _ : networkStr) =
         left = take 3 . drop 7 $ str
         right = take 3 . drop 12 $ str
 
-initializeState :: (String, Network) -> State
-initializeState (directions, network) =
-  ( cycle directions,
-    "AAA",
-    network,
-    0
-  )
-
-followInstruction :: State -> Int
-followInstruction (direction : remainingDirections, location, network, stepCount)
-  | location == "ZZZ" = stepCount
-  | otherwise = followInstruction (remainingDirections, newLocation, network, stepCount + 1)
+stepsUntilCondition :: (String -> Bool) -> String -> (String, Network) -> Int
+stepsUntilCondition condition startLocation (directions, network) =
+  followInstruction initialState
   where
-    (left, right) = network Map.! location
-    newLocation = case direction of
-      'L' -> left
-      _ -> right
+    initialState = (cycle directions, startLocation, 0)
+
+    followInstruction :: (String, String, Int) -> Int
+    followInstruction (direction : remainingDirections, location, stepCount)
+      | condition location = stepCount
+      | otherwise = followInstruction (remainingDirections, newLocation, stepCount + 1)
+      where
+        (left, right) = network M.! location
+        newLocation = if direction == 'L' then left else right
