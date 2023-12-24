@@ -27,6 +27,7 @@ data-files:
     inputs/day06.txt
     inputs/day07.txt
     inputs/day08.txt
+    inputs/day09.txt
     inputs/day10.txt
 
 source-repository head
@@ -43,6 +44,7 @@ library
       Day06
       Day07
       Day08
+      Day09
       Day10
       Helpers
       MatrixHelpers

@@ -3,6 +3,7 @@ module Helpers
     parseInt,
     readAsSingleString,
     readCommaSeparatedInts,
+    readIntLists,
     readInts,
     readStrings,
     sortDesc,
@@ -26,6 +27,11 @@ readStrings filePath = lines <$> (readFile =<< getDataFileName filePath)
 readInts :: FilePath -> IO [Int]
 readInts filePath =
   map read . lines
+    <$> (readFile =<< getDataFileName filePath)
+
+readIntLists :: String -> FilePath -> IO [[Int]]
+readIntLists separator filePath =
+  map (map read . splitOn separator) . lines
     <$> (readFile =<< getDataFileName filePath)
 
 readCommaSeparatedInts :: String -> [Int]
