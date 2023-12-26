@@ -17,7 +17,7 @@ type Matrix a = A.Array (Int, Int) a
 fromStrings :: (Char -> a) -> [String] -> Matrix a
 fromStrings parseChar strings =
   A.array
-    ((1, 1), (numCols, numRows))
+    ((1, 1), (numRows, numCols))
     [ ((m, n), parseChar char)
       | (m, string) <- zip [1 ..] strings,
         (n, char) <- zip [1 ..] string
