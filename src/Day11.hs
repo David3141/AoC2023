@@ -1,40 +1,39 @@
 module Day11 (part1, part2) where
 
 import Data.List (transpose)
-import Helpers (readStrings)
+import Helpers (readStrings, uniqPairs)
 
 part1 :: IO Int
 part1 =
-  sum . map distance . allPairs . galaxyIndices . expand
+  sum . map distance . uniqPairs . galaxyIndices 2
     <$> readStrings "inputs/day11.txt"
 
 part2 :: IO Int
-part2 = return 20
+part2 =
+  sum . map distance . uniqPairs . galaxyIndices 1000000
+    <$> readStrings "inputs/day11.txt"
 
 distance :: ((Int, Int), (Int, Int)) -> Int
 distance ((x1, x2), (y1, y2)) = abs (x1 - y1) + abs (x2 - y2)
 
-expand :: [String] -> [String]
-expand = doubleEmptyRows . doubleEmptyColumns
-  where
-    doubleEmptyRows :: [String] -> [String]
-    doubleEmptyRows = concatMap (\row -> if all (== '.') row then [row, row] else [row])
-
-    doubleEmptyColumns :: [String] -> [String]
-    doubleEmptyColumns = transpose . doubleEmptyRows . transpose
-
-galaxyIndices :: [String] -> [(Int, Int)]
-galaxyIndices strings =
+galaxyIndices :: Int -> [String] -> [(Int, Int)]
+galaxyIndices expandBy strings =
   [ (m, n)
-    | (m, row) <- zip [1 ..] strings,
-      (n, char) <- zip [1 ..] row,
+    | (m, row) <- zip (expandRowIndices strings) strings,
+      (n, char) <- zip (expandColIndices strings) row,
       char == '#'
   ]
+  where
+    -- Creates a list of indices, taking expansion into account. For example, if
+    -- the 2nd row would be expanded by 10, the result would be [1, 2, 12, 13 ...]
+    expandRowIndices :: [String] -> [Int]
+    expandRowIndices = go 1
+      where
+        go :: Int -> [String] -> [Int]
+        go idx [] = [idx]
+        go idx (string : rest)
+          | all (== '.') string = idx : go (idx + expandBy) rest
+          | otherwise = idx : go (idx + 1) rest
 
-allPairs :: [(Int, Int)] -> [((Int, Int), (Int, Int))]
-allPairs indices =
-  [ (firstIndex, secondIndex)
-    | (firstIndex, i) <- zip indices [0 :: Int ..],
-      (secondIndex, j) <- zip indices [0 ..],
-      j > i
-  ]
+    expandColIndices :: [String] -> [Int]
+    expandColIndices = expandRowIndices . transpose

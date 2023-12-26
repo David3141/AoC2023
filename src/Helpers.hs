@@ -7,6 +7,7 @@ module Helpers
     readInts,
     readStrings,
     sortDesc,
+    uniqPairs,
   )
 where
 
@@ -46,3 +47,12 @@ fMatch regEx = fromJust . match regEx
 
 sortDesc :: (Ord a) => [a] -> [a]
 sortDesc = sortBy (comparing Down)
+
+-- | Get unique pairs, e. g., [1, 4, 7] -> [(1, 4), (1,7), (4,7)]
+uniqPairs :: [a] -> [(a, a)]
+uniqPairs xs =
+  [ (first, second)
+    | (first, i) <- zip xs [0 :: Int ..],
+      (second, j) <- zip xs [0 ..],
+      j > i
+  ]
