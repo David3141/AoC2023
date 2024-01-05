@@ -31,6 +31,7 @@ data-files:
     inputs/day10.txt
     inputs/day11.txt
     inputs/day12.txt
+    inputs/day13.txt
 
 source-repository head
   type: git
@@ -50,6 +51,7 @@ library
       Day10
       Day11
       Day12
+      Day13
       Helpers
       MatrixHelpers
   other-modules:
