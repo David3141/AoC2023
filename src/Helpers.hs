@@ -59,6 +59,11 @@ uniqPairs xs =
   ]
 
 -- | https://stackoverflow.com/a/21288092
+-- | Returns all unique subsquences of size n. Examples:
+-- | ```
+-- | subseqsOfSize 2 [1..3] => [[1,2],[1,3],[2,3]]
+-- | subseqsOfSize 3 [1..4] => [[1,2,3],[1,2,4],[1,3,4],[2,3,4]]
+-- | ```
 subseqsOfSize :: Int -> [a] -> [[a]]
 subseqsOfSize n xs =
   if n > l then [] else subsequencesBySize xs !! (l - n)
