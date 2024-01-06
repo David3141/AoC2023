@@ -19,7 +19,6 @@ extra-source-files:
     README.md
     CHANGELOG.md
 data-files:
-    inputs/day01.txt
     inputs/day02.txt
     inputs/day03.txt
     inputs/day04.txt

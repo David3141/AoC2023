@@ -1,5 +1,6 @@
 module Helpers
-  ( fMatch,
+  ( countMismatches,
+    fMatch,
     parseInt,
     readAsSingleString,
     readCommaSeparatedInts,
@@ -74,3 +75,9 @@ subseqsOfSize n xs =
     subsequencesBySize (y : ys) =
       let next = subsequencesBySize ys
        in zipWith (++) (map (map (y :)) next ++ [[]]) ([] : next)
+
+-- | Examples:
+-- | countMismatches "axx" "abc" => 2
+-- | countMismatches [1, 2] [1, 2, 3] => 0
+countMismatches :: (Eq a) => [a] -> [a] -> Int
+countMismatches xs ys = sum . map fromEnum $ zipWith (/=) xs ys
