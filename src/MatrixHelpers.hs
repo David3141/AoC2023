@@ -17,6 +17,7 @@ import Data.Array.IArray ((!))
 import qualified Data.Array.IArray as A
 import Data.List (find)
 import Data.Maybe (fromJust)
+import Data.Tuple (swap)
 
 type Matrix a = A.Array (Int, Int) a
 
@@ -36,18 +37,18 @@ findIndex :: (Eq a) => a -> Matrix a -> (Int, Int)
 findIndex value = fst . fromJust . find ((== value) . snd) . A.assocs
 
 neighborIndices :: (Int, Int) -> Matrix a -> [(Int, Int)]
-neighborIndices (x, y) matrix =
+neighborIndices (m, n) matrix =
   filter (A.inRange $ A.bounds matrix)
-    . filter (/= (x, y))
-    $ A.range ((x - 1, y - 1), (x + 1, y + 1))
+    . filter (/= (m, n))
+    $ A.range ((m - 1, n - 1), (m + 1, n + 1))
 
 neighbors :: (Int, Int) -> Matrix a -> [a]
-neighbors (x, y) matrix =
-  map (matrix A.!) (neighborIndices (x, y) matrix)
+neighbors idx matrix =
+  map (matrix A.!) (neighborIndices idx matrix)
 
 neighborsWithIndex :: (Int, Int) -> Matrix a -> [((Int, Int), a)]
-neighborsWithIndex (x, y) matrix =
-  map (\index -> (index, matrix A.! index)) (neighborIndices (x, y) matrix)
+neighborsWithIndex idx matrix =
+  map (\index -> (index, matrix A.! index)) (neighborIndices idx matrix)
 
 getCol :: Int -> Matrix a -> [a]
 getCol n matrix = [val | m <- [1 .. maxM], let val = matrix A.! (m, n)]
@@ -67,9 +68,7 @@ maxBounds matrix = (maxM, maxN)
 transpose :: Matrix a -> Matrix a
 transpose matrix =
   A.array
-    ((1, 1), (maxN, maxM))
-    [ ((n, m), value)
-      | ((m, n), value) <- A.assocs matrix
+    ((1, 1), swap $ maxBounds matrix)
+    [ (swap idx, value)
+      | (idx, value) <- A.assocs matrix
     ]
-  where
-    (maxM, maxN) = maxBounds matrix
