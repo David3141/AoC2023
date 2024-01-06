@@ -1,21 +1,22 @@
 module MatrixHelpers
   ( module Data.Array.IArray,
     Matrix,
+    findIndex,
+    fromStrings,
     getCol,
     getRow,
     maxBounds,
     neighborIndices,
     neighbors,
     neighborsWithIndex,
-    findIndex,
-    fromStrings,
+    printMatrix,
     transpose,
   )
 where
 
 import Data.Array.IArray ((!))
 import qualified Data.Array.IArray as A
-import Data.List (find)
+import Data.List (find, foldl')
 import Data.Maybe (fromJust)
 import Data.Tuple (swap)
 
@@ -72,3 +73,13 @@ transpose matrix =
     [ (swap idx, value)
       | (idx, value) <- A.assocs matrix
     ]
+
+printMatrix :: Matrix Char -> IO ()
+printMatrix matrix = do
+  let (maxM, maxN) = maxBounds matrix
+  let rows = map (`getRow` matrix) [1 .. maxM]
+  let printRowWithM (m, row) = putStrLn $ show m ++ " " ++ row
+
+  putStrLn $ foldl' (++) "  " $ map show [1 .. maxN]
+
+  mapM_ printRowWithM $ zip [1 .. maxM] rows
