@@ -15,6 +15,7 @@ import qualified Day11
 import qualified Day12
 import qualified Day13
 import qualified Day14
+import qualified Day15
 import System.Environment (getArgs)
 import System.TimeIt (timeIt)
 
@@ -38,9 +39,9 @@ run 11 = runPretty 11 (Day11.part1, Day11.part2)
 run 12 = runPretty 12 (Day12.part1, Day12.part2)
 run 13 = runPretty 13 (Day13.part1, Day13.part2)
 run 14 = runPretty 14 (Day14.part1, Day14.part2)
+run 15 = runPretty 15 (Day15.part1, Day15.part2)
 run _ = putStrLn "Not implemented"
 
--- run 15 = runPretty 15 (Day15.part1, Day15.part2)
 -- run 16 = runPretty 16 (Day16.part1, Day16.part2)
 -- run 17 = runPretty 17 (Day17.part1, Day17.part2)
 runPretty :: (Show a, Show b) => Int -> (IO a, IO b) -> IO ()
