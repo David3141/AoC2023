@@ -1,5 +1,6 @@
 module Helpers
   ( countMismatches,
+    iterateWithCycleDetect,
     fMatch,
     parseInt,
     readAsSingleString,
@@ -15,6 +16,7 @@ where
 
 import Data.List (sortBy)
 import Data.List.Split (splitOn)
+import qualified Data.Map.Strict as Map
 import Data.Maybe (fromJust)
 import Data.Ord (Down (Down), comparing)
 import Paths_advent_of_code_y2023 (getDataFileName)
@@ -81,3 +83,23 @@ subseqsOfSize n xs =
 -- | countMismatches [1, 2] [1, 2, 3] => 0
 countMismatches :: (Eq a) => [a] -> [a] -> Int
 countMismatches xs ys = sum . map fromEnum $ zipWith (/=) xs ys
+
+-- Similar to iterate, repeat a function and take the n'th iteration. Stops as soon as a cycle
+-- is detected and uses modulo with the cycle length to calculate the n'th element.
+iterateWithCycleDetect :: (Ord a) => (a -> a) -> Int -> a -> a
+iterateWithCycleDetect f repeatCount element = result
+  where
+    result = results !! (cycleEnd - 1 - resultIdx) -- list is reversed, therefore reverse index
+    resultIdx = (repeatCount - cycleStart) `rem` (cycleEnd - cycleStart) + cycleStart
+    (cycleStart, cycleEnd, results) = findCycle (f element) 1 (Map.singleton element 0) [element]
+
+    findCycle element' idx seenElements elements = case Map.lookup element' seenElements of
+      Just seenAt -> (seenAt, idx, elements)
+      Nothing ->
+        findCycle
+          nextElement
+          (idx + 1)
+          (Map.insert element' idx seenElements)
+          (element' : elements)
+        where
+          nextElement = f element'

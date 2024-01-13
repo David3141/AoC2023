@@ -5,6 +5,8 @@ module MatrixHelpers
     fromStrings,
     getCol,
     getRow,
+    mapCols,
+    mapRows,
     maxBounds,
     neighborIndices,
     neighbors,
@@ -14,7 +16,7 @@ module MatrixHelpers
   )
 where
 
-import Data.Array.IArray ((!))
+import Data.Array.IArray ((!), (//))
 import qualified Data.Array.IArray as A
 import Data.List (find, foldl')
 import Data.Maybe (fromJust)
@@ -73,6 +75,20 @@ transpose matrix =
     [ (swap idx, value)
       | (idx, value) <- A.assocs matrix
     ]
+
+mapRows :: ([a] -> [a]) -> Matrix a -> Matrix a
+mapRows f matrix = matrix // concatMap updateRow [1 .. maxM]
+  where
+    updateRow m = zip (rowIndices m) (f $ getRow m matrix)
+    rowIndices m = A.range ((m, 1), (m, maxN))
+    (maxM, maxN) = maxBounds matrix
+
+mapCols :: ([a] -> [a]) -> Matrix a -> Matrix a
+mapCols f matrix = matrix // concatMap updateCol [1 .. maxN]
+  where
+    updateCol n = zip (colIndices n) (f $ getCol n matrix)
+    colIndices n = A.range ((1, n), (maxM, n))
+    (maxM, maxN) = maxBounds matrix
 
 printMatrix :: Matrix Char -> IO ()
 printMatrix matrix = do
